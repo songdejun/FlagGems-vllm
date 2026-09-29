@@ -39,13 +39,6 @@ _ILUVATAR_SMALL_CONFIGS = [
     triton.Config({"TILE_M": 1, "N_BLOCK": 4096}, num_warps=4),
 ]
 
-# Tuned on Ascend NPU for DeepSeek-V4 qnorm shapes (q_size=1536, kv_size=512).
-# The kernel walks the row in N_BLOCK chunks, so N_BLOCK no longer has to
-# cover the whole row: 512-wide rows run with zero masked-lane waste and
-# TILE_M fattens programs for large token counts.
-# Keep this list tight: the autotuner's internal timing and the mspti-based
-# benchmark disagree on narrow blocks, so only configs that are fast under
-# both are listed.
 _ILUVATAR_TILE_CONFIGS = [
     # narrow-row safety floor (rows <= 256 wide)
     triton.Config({"TILE_M": 1, "N_BLOCK": 256}, num_warps=2),
